@@ -1,54 +1,92 @@
-## Customize this file after creating the new REPO and remove this lines.
-What to adjust:  
-* Add the your project or repo name direct under the logo.
-* Add a short and long desciption.
-* Add links for your final repo to report a bug or request a feature.
-* Add list of used technologies.
-* If you have, add a roadmap or remove this section.
-* Fill up the section for set up and documentation.
- * Start in this file only with documentation and link to the docs folder.
-* Add more project shields. Use [shields.io](https://shields.io/) with style `for-the-badge`.
+[open-issues]: https://github.com/it-at-m/keycloak-custom-otp-plugin/issues
+[new-issue]: https://github.com/it-at-m/keycloak-custom-otp-plugin/issues/new/choose
+[license]: ./LICENSE
+[new-issue-shield]: https://img.shields.io/badge/new%20issue-blue?style=for-the-badge
+[made-with-love-shield]: https://img.shields.io/badge/made%20with%20%E2%9D%A4%20by-it%40M-yellow?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/it-at-m/refarch?style=for-the-badge
+[itm-opensource]: https://opensource.muenchen.de/
 
-## ------- end to remove -------
-<!-- add Project Logo, if existing -->
+# keycloak-custom-otp-plugin
 
-# repo or project name
-
+[![New issue][new-issue-shield]][new-issue]
 [![Made with love by it@M][made-with-love-shield]][itm-opensource]
-<!-- feel free to add more shields, style 'for-the-badge' -> see https://shields.io/badges -->
+[![GitHub license][license-shield]][license]
 
-*Add a description from your project here.*
+TODO
 
+## Built With
 
-### Built With
+- OpenJDK 21
+- Keycloak 26
 
-The documentation project is built with technologies we use in our projects:
+## Installation
+- start Keycloak
+- Build and deploy:
+    - cd backend
+    - mvn clean install
+    - run locally with docker:
+        - `docker build . -t keycloak-custom-otp`
+        - `docker run --name keycloak-custom-otp -p 8443:8443 keycloak-custom-otp start-dev`
 
-* *write here the list of used technologies*
+## Configuration:
+- Login to Keycloak as admin
+- create new realm `safe`
+- realm settings --> Themes --> set login theme to `otptheme`
+- realm settings --> Localization --> Set Internationalization to enabled, supported locales "German" and "English"
+- Authentication --> Flows
+    - Browser-flow -->  Duplicate with name `browser_custom_otp`
+    - Configure like this
+      ![browser_custom_otp](browser_custom_otp.png)
+    - Button "Action" --> Bind flow
+- Creat neuen user otp (PW: otp) (firstname, lastname and eMail necessary but anything)
+- In realm master: Clients --> Client safe-realm, tab Roles, button "create role", create role with name "custom-add-otp"
+- Users --> User "admin" --> Tab "Role mapping"
+    - Button "Assign role", find role "custom-add-otp" and assign
+    - Button "Assign role" --> search for "safe-realm" --> assign role "manage-users"
+
+## Test
+- Check user in admin console:
+    - https://localhost:8443/auth/admin/master/console/#/safe/users
+    - User otp
+- first login:
+    - https://localhost:8443/auth/realms/safe/account
+    - User: otp/otp
+    - should show error message that OTP is not configured
+- rollout OTP via POST-request:
+    - get token for admin:
+        - POST https://localhost:8443/auth/realms/master/protocol/openid-connect/token
+        - Header: Content-Type application/x-www-form-urlencoded
+        - Body: client_id=admin-cli&grant_type=password&username=admin&password=admin
+        - execute, copy access token
+    - create TOTP for user
+        - POST http://localhost:8080/auth/realms/safe/totp
+        - Header: Content-Type application/json
+        - Header: Authorization bearer <token from Call 1>
+        - Body: `{"username": "otp"}`
+        - should result in:
+      ```
+      {
+      "secret": "gram6k9gm2kqstLoqR9x",
+      "secretQrcode": "iVBORw...kJggg=="
+      }
+      ```
+- Copy content of secretQrcode into file backend/src/main/resources/ViewQRCode.html
+  (aber `base64, ` up to the closing quotes)
+- open ViewQrCode.html in browser
+- Scan in smartphone with OTP App like FreeOTP or Google Authenticator
+- Second login:
+    - this time it asks for OTP
+    - account login page shows
+- remove TOTP via DELETE-request
+    - get token for admin (see above)
+    - remove TOTP
+        - DELETE https://localhost:8443/auth/realms/safe/totp/otp
+        - Header: Authorization bearer <token from Call 1>
+        - no body
 
 ## Roadmap
 
-*if you have a ROADMAP for your project add this here*
-
-
-See the [open issues](#) for a full list of proposed features (and known issues).
-
-
-## Set up
-*how can i start and fly this project*
-
-## Documentation
-*what insights do you have to tell*
-
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
-
-use [diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams).
+See the [open issues][open-issues] for a full list of proposed features (and known issues).
 
 ## Contributing
 
@@ -64,18 +102,12 @@ Don't forget to give the project a star! Thanks again!
 5. Push to the Branch (`git push origin feature/AmazingFeature`)
 6. Open a Pull Request
 
-More about this in the [CODE_OF_CONDUCT](/CODE_OF_CONDUCT.md) file.
-
+More about this in the [CODE_OF_CONDUCT](./.github/CODE_OF_CONDUCT.md) file.
 
 ## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) file for more information.
 
-
 ## Contact
 
-it@M - opensource@muenchen.de
-
-<!-- project shields / links -->
-[made-with-love-shield]: https://img.shields.io/badge/made%20with%20%E2%9D%A4%20by-it%40M-yellow?style=for-the-badge
-[itm-opensource]: https://opensource.muenchen.de/
+it@M - <opensource@muenchen.de>
