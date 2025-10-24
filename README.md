@@ -28,7 +28,7 @@ TODO
         - `docker build . -t keycloak-custom-otp`
         - `docker run --name keycloak-custom-otp -p 8443:8443 keycloak-custom-otp start-dev`
 
-## Configuration:
+## Configuration
 - Login to Keycloak as admin
 - create new realm `safe`
 - realm settings --> Themes --> set login theme to `otptheme`
