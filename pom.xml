@@ -40,7 +40,7 @@
         <wildfly.version>2.0.0.Final</wildfly.version>
 
         <lombok.version>1.18.34</lombok.version>
-        <scm.plugin.version>2.1.0</scm.plugin.version>
+        <scm.plugin.version>2.2.1</scm.plugin.version>
     </properties>
 
     <dependencies>
