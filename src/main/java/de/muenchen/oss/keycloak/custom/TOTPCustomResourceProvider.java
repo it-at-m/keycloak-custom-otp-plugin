@@ -21,8 +21,6 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.services.resource.RealmResourceProvider;
 import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.AdminRoot;
-//up to 26.2
-import org.keycloak.services.resources.admin.permissions.AdminPermissions;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -30,8 +28,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.credential.CredentialModel;
 import org.keycloak.services.ErrorResponseException;
-//from 26.3
-//import org.keycloak.services.resources.admin.fgap.AdminPermissions;
+import org.keycloak.services.resources.admin.fgap.AdminPermissions;
 import org.keycloak.utils.CredentialHelper;
 
 /**
