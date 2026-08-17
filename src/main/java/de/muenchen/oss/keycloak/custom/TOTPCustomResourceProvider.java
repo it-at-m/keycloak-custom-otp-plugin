@@ -23,8 +23,6 @@ import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.AdminRoot;
 
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.credential.CredentialModel;
 import org.keycloak.services.ErrorResponseException;
@@ -62,18 +60,17 @@ public class TOTPCustomResourceProvider extends AdminRoot implements RealmResour
      * Bietet eine Restschnittstelle an, welche für einen User den QR-Code
      * zur 2-Faktor-Authentifizierung zurückliefert.
      *
-     * @param headers     HttpHeaders des Requests
      * @param totpRequest der TOTPRequest an sich
      * @return TOTPResponse mit QR-Code
      */
     @POST
     @Produces("application/json")
-    public TOTPResponse post(@Context final HttpHeaders headers, final TOTPRequest totpRequest) {
+    public TOTPResponse post(final TOTPRequest totpRequest) {
         final KeycloakContext context = session.getContext();
         final RealmModel targetRealm = context.getRealm(); //schon hier abholen; context.getRealm ändert sich nach Aufruf von authenticateRealmAdminRequest!
 
         //check if the admin has the permissions to execute this
-        checkAdminPermissions(headers, targetRealm);
+        checkAdminPermissions(targetRealm);
 
         //check inputs
         final String username = totpRequest.getUsername();
@@ -122,12 +119,12 @@ public class TOTPCustomResourceProvider extends AdminRoot implements RealmResour
 
     @DELETE
     @Path("{username}")
-    public Response delete(@Context final HttpHeaders headers, @PathParam("username") String username) {
+    public Response delete(@PathParam("username") String username) {
         final KeycloakContext context = session.getContext();
         final RealmModel targetRealm = context.getRealm(); //schon hier abholen; context.getRealm ändert sich nach Aufruf von authenticateRealmAdminRequest!
 
         //check if the admin has the permissions to execute this
-        checkAdminPermissions(headers, targetRealm);
+        checkAdminPermissions(targetRealm);
 
         //check inputs
         UserModel user = findUser(username, targetRealm);
@@ -166,11 +163,11 @@ public class TOTPCustomResourceProvider extends AdminRoot implements RealmResour
         // Needed to be overridden
     }
 
-    private void checkAdminPermissions(final HttpHeaders headers, RealmModel targetRealm) {
+    private void checkAdminPermissions(RealmModel targetRealm) {
         final KeycloakContext context = session.getContext();
 
         //check if current user is authenticated and authorized (checks bearer token) as (local or global) admin
-        final AdminAuth auth = authenticateRealmAdminRequest(headers);
+        final AdminAuth auth = authenticateRealmAdminRequest(session);
         if (!AdminPermissions.realms(session, auth).isAdmin(targetRealm)) {
             LOG.error("User with given Access Token is not admin for realm " + targetRealm.getName());
             throw new ErrorResponseException("NOT-ADMIN-USER", "User with given Access Token is not admin for realm " + targetRealm.getName(),
