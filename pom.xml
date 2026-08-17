@@ -35,7 +35,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <keycloak.version>26.6.4</keycloak.version>
-        <jboss-logging.version>3.6.0.Final</jboss-logging.version>
+        <jboss-logging.version>3.6.3.Final</jboss-logging.version>
         <wildfly.version>2.0.0.Final</wildfly.version>
 
         <lombok.version>1.18.34</lombok.version>
