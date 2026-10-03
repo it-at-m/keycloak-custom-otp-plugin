@@ -12,14 +12,14 @@ jobs:
     env:
       TZ: Europe/Berlin # timezone
     steps:
-      - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@9767179088fd2e344d1a24c17404ab809a60f1b6 # v1.0.20
+      - uses: it-at-m/lhm_actions/action-templates/actions/action-checkout@e967c9de8fb0197faf7a294d153efa76de5cec27 # v1.6.0
       - if: ${{ hashFiles('./package.json')!=null }}
         id: node
-        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-build@9767179088fd2e344d1a24c17404ab809a60f1b6 # v1.0.20
+        uses: it-at-m/lhm_actions/action-templates/actions/action-npm-build@e967c9de8fb0197faf7a294d153efa76de5cec27 # v1.6.0
         with:
           app-path: ""
       - if: ${{ hashFiles('./pom.xml')!=null }}
         id: maven
-        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-build@9767179088fd2e344d1a24c17404ab809a60f1b6 # v1.0.20
+        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-build@e967c9de8fb0197faf7a294d153efa76de5cec27 # v1.6.0
         with:
           app-path: ""

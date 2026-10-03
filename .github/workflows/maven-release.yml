@@ -22,7 +22,7 @@ jobs:
       TZ: Europe/Berlin # timezone
     steps:
       - id: maven-release-step
-        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-release@9767179088fd2e344d1a24c17404ab809a60f1b6 # v1.0.20
+        uses: it-at-m/lhm_actions/action-templates/actions/action-maven-release@e967c9de8fb0197faf7a294d153efa76de5cec27 # v1.6.0
         with:
           app-path: ""
           releaseVersion: ${{ github.event.inputs.releaseVersion }}
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download a single artifact
-        uses: it-at-m/lhm_actions/action-templates/actions/action-create-github-release@9767179088fd2e344d1a24c17404ab809a60f1b6 # v1.0.20
+        uses: it-at-m/lhm_actions/action-templates/actions/action-create-github-release@e967c9de8fb0197faf7a294d153efa76de5cec27 # v1.6.0
         with:
           artifact-name: ${{ needs.release-maven.outputs.ARTIFACT_NAME }}
           tag-name: ${{ github.event.inputs.releaseVersion }}
